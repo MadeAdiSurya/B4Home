@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CapstoneTestApp</string>
+
+    <string name="enter_status">Enter %s</string>
+    <string name="enter_name">Enter Name</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_password">Enter Password</string>
+</resources>
