@@ -36,6 +36,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.okta.capstonetestapp.model.HomeList
 import com.okta.capstonetestapp.navigation.Screen
 
@@ -46,6 +49,8 @@ fun HomeScreen(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ){
+    val auth = Firebase.auth
+    val currentUser = auth.currentUser
     Scaffold (
         topBar = {
             TopAppBar(

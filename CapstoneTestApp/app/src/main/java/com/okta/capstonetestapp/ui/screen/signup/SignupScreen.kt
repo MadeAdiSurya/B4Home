@@ -40,10 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.okta.capstonetestapp.R
 import com.okta.capstonetestapp.navigation.Screen
 import com.okta.capstonetestapp.ui.components.EmailText
 import com.okta.capstonetestapp.ui.components.PasswordText
+
+private lateinit var database: DatabaseReference
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
@@ -59,6 +65,10 @@ fun SignupScreen(
     var isPasswordTextTapped by remember { mutableStateOf(false) }
     val isPasswordValid = inputPassword.length >= 8
     var output by remember { mutableStateOf("") }
+    val auth = FirebaseAuth.getInstance()
+
+    database = FirebaseDatabase.getInstance().getReferenceFromUrl("https://b4home-login-register-default-rtdb.firebaseio.com/")
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Image(
@@ -140,6 +150,16 @@ fun SignupScreen(
         )
         Button(
             onClick = {
+                auth.createUserWithEmailAndPassword(inputEmail, inputPassword)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // User is successfully registered and logged in
+
+                        } else {
+                            // Registration failed
+                            // ...
+                        }
+                    }
                 navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Welcome.route) { saveState = true }
                     restoreState = true

@@ -2,6 +2,7 @@ package com.okta.capstonetestapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.okta.capstonetestapp.navigation.Screen
 import com.okta.capstonetestapp.ui.screen.about.AboutScreen
 import com.okta.capstonetestapp.ui.screen.detail.EstimasiDetail
@@ -38,10 +40,21 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val auth = FirebaseAuth.getInstance()
                     val navController = rememberNavController()
+                    val startDestination = if (auth.currentUser != null) Screen.Home.route else Screen.Welcome.route
+
+                    BackHandler {
+                        when (navController.currentDestination?.route) {
+                            Screen.Home.route -> finish()
+                            Screen.Welcome.route -> finish()
+                            else -> navController.popBackStack()
+                        }
+                    }
+
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Welcome.route,
+                        startDestination = startDestination,
                     ){
                         composable(Screen.Welcome.route){
                             WelcomeScreen(navController)
@@ -78,6 +91,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(Screen.EstimasiDetail.route){
                             EstimasiDetail()
+                        }
+                        composable(Screen.Profile.route){
+                            ProfileScreen(navController)
                         }
                     }
                 }
