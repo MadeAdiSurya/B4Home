@@ -1,4 +1,5 @@
 # Exclude common Python and development files
+README.md
 Dockerfile
 *.pyc
 *.pyo
