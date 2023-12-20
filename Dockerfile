@@ -1,20 +1,21 @@
-# Use the official Python image as a base image
-FROM python:3.10-slim
+# Use the official Python image as the base image
+FROM python:3.9-slim
 
-# Set the working directory inside the container
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file into the container
-COPY requirements.txt .
+# Copy the requirements.txt file into the container at /app
+COPY requirements.txt /app/
 
-# Install any dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any dependencies specified in requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-# Copy the current directory contents into the container
-COPY . .
+# Copy the rest of the application code into the container
+COPY . /app/
 
-# Expose the port that the app will run on
-EXPOSE 8080
+# Expose port 5000
+EXPOSE 5000
 
-# Command to run the application
-CMD ["python", "main.py"]
+# Specify the command to run on container start
+CMD ["gunicorn", "--bind", ":5000", "--workers", "1", "--threads", "8", "--timeout", "0", "main:app"]
