@@ -90,10 +90,10 @@ def predict():
     #get year calculation
     rate = diff_year(tahun)
 
-    end_price = scaled_price *(1+ rate) 
+    end_price = round(scaled_price *(1+ rate))
 
     # Return the result as JSON
-    return jsonify({'price_prediction': end_price})
+    return jsonify({'price_prediction': end_price, 'price_now': scaled_price})
 
 if __name__ == '__main__':
     app.run(debug=True)
