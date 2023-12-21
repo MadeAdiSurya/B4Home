@@ -206,14 +206,14 @@ def predict_house_type(input_harga):
 def predict_house():
     data = request.get_json()
     input_harga = data['input_harga']
-    tahun = data["tahun"]
+    tahun = data['tahun']
 
     final_price = harga_akhir(input_harga, tahun)
     
     LB_value = 1
     LT_value = 0
 
-    while (LB_value > LT_value or abs(LT_value - LB_value) <= 100):
+    while (LB_value > LT_value):
         temp = predict_house_type(final_price)
         LB_value = temp['LB']
         LT_value = temp['LT']
