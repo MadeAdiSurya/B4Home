@@ -6,7 +6,7 @@ import tensorflow
 from tensorflow import keras
 from flask import Flask, request, jsonify
 import numpy as np
-import datetime
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -49,14 +49,18 @@ def convert_GRS(value):
     temp = (value - GRS_mean) / GRS_std
     return temp
 
+def diff_year(value):
+    temp = abs(value - datetime.now().year)
+    return temp * 0.05
+
 def price_ori_scale(value):
     original_value = abs(value * HARGA_std) + HARGA_mean
     return int(original_value)
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     current_year = datetime.now().year
-    appreciation_rate = 0.05
     k = 0.4423
     data = request.json  # Assuming the data is sent as JSON in the request body
 
@@ -65,7 +69,7 @@ def predict():
     kt = data.get('kt', None)
     km = data.get('km', None)
     grs = data.get('grs', None)
-    tahun = data.get("tahun", None)
+    tahun = data.get("tahun")
 
     # Normalize the input data
     lb_norm = convert_LB(lb)
@@ -84,10 +88,9 @@ def predict():
     scaled_price = round(price_ori_scale(prediction[0, 0]) * k)
 
     #get year calculation
-    diff_year = tahun-current_year
-    final_appreciation_rate = diff_year * appreciation_rate
+    rate = diff_year(tahun)
 
-    end_price = scaled_price *(1+ final_appreciation_rate) 
+    end_price = scaled_price *(1+ rate) 
 
     # Return the result as JSON
     return jsonify({'price_prediction': end_price})
