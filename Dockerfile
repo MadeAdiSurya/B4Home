@@ -1,21 +1,12 @@
 # Use the official Python image as the base image
-FROM python:3.9-slim
+FROM python:3.10-slim
 
-# Set the working directory in the container
-WORKDIR /app
+ENV PYTHONUNBUFFERED True
 
-# Copy the requirements.txt file into the container at /app
-COPY requirements.txt /app/
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
 
-# Install any dependencies specified in requirements.txt
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
-# Copy the rest of the application code into the container
-COPY . /app/
-
-# Expose port 5000
-EXPOSE 5000
-
-# Specify the command to run on container start
-CMD ["gunicorn", "--bind", ":5000", "--workers", "1", "--threads", "8", "--timeout", "0", "main:app"]
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 main:app
