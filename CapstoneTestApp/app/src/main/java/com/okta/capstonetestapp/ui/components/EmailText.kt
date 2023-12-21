@@ -13,12 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -54,7 +48,7 @@ fun EmailText(
 
         if (!isEmailValid && email.isNotEmpty()) {
             Text(
-                text = "Please enter a valid email",
+                text = stringResource(R.string.please_enter_a_valid_email),
                 color = Color.Red,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier

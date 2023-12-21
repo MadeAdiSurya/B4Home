@@ -5,20 +5,20 @@ data class HomeListData(val pageName: String, val imageUrl: String, val title: S
 val HomeList = listOf(
     HomeListData(
         "PerkiraanForm",
-        "https://th.bing.com/th/id/OIP.k-ckp0YD1SWZWwKt3_AT8AHaE8?rs=1&pid=ImgDetMain",
-        "Cari Tau Kapan Uang Anda Cukup Buat Beli Rumah",
-        "Cari tau estimasi harga rumah sesuai tabungan, target tahun, dan spesifikasi rumah"
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYR-I__fiNZsy7Mx1D0V0-GJjJOQTw9Btsvb5EXNHPBeVuF0--TGVslZpn_7gKakPcYBKQaGPsKCtckZbmJnacOWmyyD=s1600",
+        "Find Out When You Have Enough Money to Buy a House",
+        "Find out the estimated house price according to your types and target year."
     ),
     HomeListData(
         "TipeForm",
-        "https://media.istockphoto.com/photos/latin-american-business-man-isolated-on-blue-background-picture-id669601126?k=6&m=669601126&s=170667a&w=0&h=ui_JURwx_m1v5q4ayJZsxg9dK7FW3ny7SHOWy9dbfNE=",
-        "Cari Tau Rumah yang Cocok Buat Anda",
-        "Cari tipe rumah sesuai tabungan dan target anda"
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYTSv34wtYeqRSPv95WCXoZRF2P3Zrx8MTB8V5AG-L3jZ9BHydXOstwiZoCkQ9oYlnZAbtRPYANXzOSRoXilzaGElcrKLw=s1600",
+        "Find Out Which House is The Right One For You",
+        "Find the type of house that suits your savings and target"
     ),
     HomeListData(
-        "EstimasiForm",
-        "https://th.bing.com/th/id/OIP.k-ckp0YD1SWZWwKt3_AT8AHaE8?rs=1&pid=ImgDetMain",
-        "Cari Tau Cara Menabung Untuk Membeli Rumah",
-        "Cari target menabung sesuai dengan preferensi rumah dan target tahun anda"
-    )
+        "KprForm",
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYTbfcPu1MyJT5NWyBwjbU-8ZX1fb9VuhbRD-iE73uZg6l4Va0X1N5x1dsdFd3Ho3TfpSawZl8pDM-EmGePVS7q2oGULWg=s1600",
+        "Find Out About KPR Interest",
+        "Find the amount for the KPR you need to pay"
+    ),
 )

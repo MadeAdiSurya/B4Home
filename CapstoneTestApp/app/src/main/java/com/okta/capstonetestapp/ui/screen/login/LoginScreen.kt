@@ -1,13 +1,18 @@
 package com.okta.capstonetestapp.ui.screen.login
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,9 +20,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -37,6 +45,7 @@ fun LoginScreen(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
+    var isLoading by remember { mutableStateOf(false) }
 
     var inputEmail by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(true) }
@@ -45,126 +54,134 @@ fun LoginScreen(
     val loginResponse = remember { mutableStateOf(false) }
     val auth = FirebaseAuth.getInstance()
 
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Image(
-            painter = painterResource(R.drawable.housepricing),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxHeight(0.4f)
-        )
-        Text(
-            text = "Let’s Check Houses Price and Datas!",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(start = 32.dp, end = 32.dp, top = 8.dp)
-        )
-        Text(
-            text = "But before that please enter your data first!",
-            fontSize = 14.sp,
-            modifier = Modifier
-                .padding(horizontal = 32.dp, vertical = 8.dp)
-        )
-        Text(
-            text = "Email",
-            fontSize = 14.sp,
-            modifier = Modifier
-                .padding(start = 32.dp, end = 32.dp, top = 16.dp)
-        )
-        EmailText(
-            email = inputEmail,
-            onEmailChange = { newEmail -> inputEmail = newEmail },
-            isEmailValid = isEmailValid,
-            onEmailValidChange = { isValid -> isEmailValid = isValid }
-        )
-        Text(
-            text = "Password",
-            fontSize = 14.sp,
-            modifier = Modifier
-                .padding(horizontal = 32.dp)
-        )
-        PasswordText(
-            input = inputPassword,
-            onValueChange = { inputPassword = it },
-            isError = false,
-            isTapped = false
-        )
-        Button(
-            onClick = {
-                auth.signInWithEmailAndPassword(inputEmail, inputPassword)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // User is successfully signed in
-                            openDialog.value = true
-                            loginResponse.value = true
-                        } else {
-                            // Sign in failed
-                            openDialog.value = true
-                            loginResponse.value = false
-                        }
-                    }
-
-            },
-            enabled = isEmailValid && inputEmail.isNotEmpty() && inputPassword.isNotEmpty(),
-            modifier = modifier
-                .padding(start = 32.dp, end = 32.dp, top = 16.dp)
-                .fillMaxWidth()
-                .height(64.dp)
-        ) {
-            Text(
-                text = "Log In",
-                fontSize = 16.sp,
+    Box(modifier = Modifier.fillMaxSize()){
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Image(
+                painter = painterResource(R.drawable.housepricing),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxHeight(0.4f)
             )
-        }
-//        if (navigateToHome.value) {
-//            LaunchedEffect(Unit) {
-//                navController.navigate(Screen.Home.route) {
-//                    popUpTo(Screen.Login.route) { saveState = true }
-//                    restoreState = true
-//                    launchSingleTop = true
-//                }
-//            }
-//        }
-        if (openDialog.value){
-            AlertDialog(
-                onDismissRequest = {
-                    openDialog.value = false
-                },
-                title = {
-                    if (loginResponse.value) {
-                        Text(text = "Yeah!")
-                    } else {
-                        Text(text = "Error!")
-                    }
-
-                },
-                text = {
-                    if (loginResponse.value) {
-                        Text("Successfully Login")
-                    } else {
-                        Text("Wrong Email or Password")
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            if (loginResponse.value) {
-                                openDialog.value = false
-                                navController.navigate(Screen.Home.route) {
-                                    popUpTo(Screen.Login.route) { saveState = true }
-                                    restoreState = true
-                                    launchSingleTop = true
-                                }
+            Text(
+                text = stringResource(R.string.let_s_check_houses_price_and_datas),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(start = 32.dp, end = 32.dp, top = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.but_before_that_please_enter_your_data_first),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .padding(horizontal = 32.dp, vertical = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.email),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .padding(start = 32.dp, end = 32.dp, top = 16.dp)
+            )
+            EmailText(
+                email = inputEmail,
+                onEmailChange = { newEmail -> inputEmail = newEmail },
+                isEmailValid = isEmailValid,
+                onEmailValidChange = { isValid -> isEmailValid = isValid }
+            )
+            Text(
+                text = stringResource(R.string.password),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .padding(horizontal = 32.dp)
+            )
+            PasswordText(
+                input = inputPassword,
+                onValueChange = { inputPassword = it },
+                isError = false,
+                isTapped = false
+            )
+            Button(
+                onClick = {
+                    isLoading = true
+                    auth.signInWithEmailAndPassword(inputEmail, inputPassword)
+                        .addOnCompleteListener { task ->
+                            isLoading = false
+                            if (task.isSuccessful) {
+                                // User is successfully signed in
+                                openDialog.value = true
+                                loginResponse.value = true
                             } else {
-                                openDialog.value = false
+                                // Sign in failed
+                                openDialog.value = true
+                                loginResponse.value = false
                             }
                         }
-                    ) {
-                        Text("Lanjut")
+
+                },
+                enabled = isEmailValid && inputEmail.isNotEmpty() && inputPassword.isNotEmpty(),
+                modifier = modifier
+                    .padding(start = 32.dp, end = 32.dp, top = 16.dp)
+                    .fillMaxWidth()
+                    .height(64.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.log_in),
+                    fontSize = 16.sp,
+                )
+            }
+            if (openDialog.value) {
+                AlertDialog(
+                    onDismissRequest = {
+                        openDialog.value = false
+                    },
+                    title = {
+                        if (loginResponse.value) {
+                            Text(text = stringResource(R.string.yeah))
+                        } else {
+                            Text(text = stringResource(R.string.error))
+                        }
+
+                    },
+                    text = {
+                        if (loginResponse.value) {
+                            Text(stringResource(R.string.successfully_login))
+                        } else {
+                            Text(stringResource(R.string.wrong_email_or_password))
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                if (loginResponse.value) {
+                                    openDialog.value = false
+                                    navController.navigate(Screen.Home.route) {
+                                        popUpTo(Screen.Login.route) { saveState = false }
+                                        restoreState = true
+                                        launchSingleTop = true
+                                    }
+                                } else {
+                                    openDialog.value = false
+                                }
+                            }
+                        ) {
+                            Text(stringResource(R.string.continueWord))
+                        }
                     }
-                }
-            )
+                )
+            }
+        }
+        if (isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f))
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.Center)
+                )
+            }
         }
     }
 }

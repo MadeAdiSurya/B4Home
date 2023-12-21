@@ -9,7 +9,7 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object PerkiraanForm : Screen("perkiraanForm")
     object TipeForm : Screen("tipeForm")
-    object EstimasiForm : Screen("estimasiForm")
+    object KprForm : Screen("kprForm")
     object PerkiraanDetail : Screen("perkiraanDetail")
     object TipeDetail : Screen("tipeDetail")
     object EstimasiDetail : Screen("estimasiDetail")

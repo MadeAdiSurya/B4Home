@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,14 +39,14 @@ fun WelcomeScreen(
                 .fillMaxHeight(0.5f)
         )
         Text(
-            text = "Welcome to B4Home!",
+            text = stringResource(R.string.welcome_to_b4home),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(start = 32.dp, end = 32.dp, top = 8.dp)
         )
         Text(
-            text = "Would like to know how much a house costs in the next 10 years? or Match a house by your preferences? Use B4Home",
+            text = stringResource(R.string.welcoming_sentence),
             fontSize = 14.sp,
             modifier = Modifier
                 .padding(horizontal = 32.dp, vertical = 8.dp)
@@ -69,7 +70,7 @@ fun WelcomeScreen(
                     .padding(start = 32.dp, end = 16.dp)
                     .weight(1f),
             ) {
-                Text(text = "Log In")
+                Text(text = stringResource(R.string.log_in))
             }
             Button(
                 onClick = {
@@ -83,7 +84,7 @@ fun WelcomeScreen(
                     .padding(start = 16.dp, end = 32.dp)
                     .weight(1f),
             ) {
-                Text(text = "Sign Up")
+                Text(text = stringResource(R.string.sign_up))
             }
         }
     }

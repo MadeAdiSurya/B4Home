@@ -10,15 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,41 +42,46 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.okta.capstonetestapp.R
 import com.okta.capstonetestapp.navigation.Screen
-import com.okta.capstonetestapp.ui.components.MonthYearPicker
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TipeForm(
+fun KprForm(
     navController: NavHostController = rememberNavController(),
 ) {
-    val viewModel: TipeFormViewModel = viewModel()
+    val viewModel: KprFormViewModel = viewModel()
+    val kprResponse by viewModel.kprResponse.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    val areaResponse by viewModel.areaResponse.collectAsState()
 
     var inputHarga by remember { mutableStateOf("") }
+    var inputSukuBunga by remember { mutableStateOf("") }
+    var inputUangMuka by remember { mutableStateOf("") }
+    var inputJangkaWaktu by remember { mutableStateOf("") }
 
-    var selectedYear by remember { mutableStateOf(2024) }
-    var showDialog by remember { mutableStateOf(false) }
+    var isSukuBungaTextTapped by remember { mutableStateOf(false) }
+    val isSukuBungaValid =
+        (inputSukuBunga.toDoubleOrNull() ?: 0.0) > 0 && (inputSukuBunga.toDoubleOrNull()
+            ?: 0.0) <= 100
 
-    var isPriceTextTapped by remember { mutableStateOf(false) }
-    val isPriceValid = (inputHarga.toDoubleOrNull() ?: 0.0) >= 1000000000 && (inputHarga.toDoubleOrNull() ?: 0.0) <= 100000000000
+    var isJangkaWaktuTextTapped by remember { mutableStateOf(false) }
+    val isJangkaWaktuValid =
+        (inputJangkaWaktu.toDoubleOrNull() ?: 0.0) > 0 && (inputJangkaWaktu.toDoubleOrNull()
+            ?: 0.0) <= 20
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = stringResource(R.string.find_house_preference)) },
+                title = { Text(text = stringResource(R.string.count_kpr_interest)) },
                 navigationIcon = {},
                 actions = {
                     // Add action icons here
                     IconButton(onClick = {
                         navController.navigate(Screen.About.route) {
-                            popUpTo(Screen.TipeForm.route) { saveState = true }
+                            popUpTo(Screen.PerkiraanForm.route) { saveState = true }
                             restoreState = true
                             launchSingleTop = true
                         }
@@ -90,7 +90,7 @@ fun TipeForm(
                     }
                     IconButton(onClick = {
                         navController.navigate(Screen.Profile.route) {
-                            popUpTo(Screen.TipeForm.route) { saveState = true }
+                            popUpTo(Screen.PerkiraanForm.route) { saveState = true }
                             restoreState = true
                             launchSingleTop = true
                         }
@@ -117,82 +117,99 @@ fun TipeForm(
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                 )
-                priceTextField(
-                    input = inputHarga,
+                OutlinedTextField(
+                    value = inputHarga,
                     onValueChange = { newInput ->
                         inputHarga = newInput
-                        isPriceTextTapped = true
                     },
-                    isError = !isPriceValid,
-                    isTapped = isPriceTextTapped,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            painterResource(R.drawable.rupiah),
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    },
+                    maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                 )
                 Text(
-                    text = stringResource(R.string.target_to_buy_a_house),
+                    text = stringResource(R.string.interest_rate),
                     fontSize = 14.sp,
                     modifier = Modifier
                         .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
                 )
-                Row {
-                    OutlinedTextField(
-                        value = selectedYear.toString(),
-                        onValueChange = {},
-                        enabled = false,
-                        leadingIcon = { Icon(Icons.Outlined.DateRange, contentDescription = null) },
-                        modifier = Modifier
-                            .weight(0.75f)
-                            .padding(start = 16.dp, end = 8.dp)
-                    )
-                    Button(
-                        onClick = { showDialog = true },
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 16.dp)
-                            .weight(0.25f)
-                            .size(56.dp)
-                            .clip(CircleShape)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .size(14.dp)
-                        )
-                    }
-                    if (showDialog) {
-                        Dialog(onDismissRequest = { showDialog = false }) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.background,
-                                        shape = RoundedCornerShape(16.dp)
-                                    )
-                                    .padding(16.dp)
-                            ) {
-                                MonthYearPicker(
-                                    selectedYear = selectedYear,
-                                    onYearSelected = { year ->
-                                        selectedYear = year
-                                        // Do something with the selected year
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-                val isButtonEnabled = inputHarga.isNotEmpty()
-                val isInputValid = inputHarga.toDoubleOrNull()?.let { it >= 0 } == true
+                sukuBungaTextField(
+                    input = inputSukuBunga,
+                    onValueChange = { newInput ->
+                        inputSukuBunga = newInput
+                        isSukuBungaTextTapped = true
+                    },
+                    isError = !isSukuBungaValid,
+                    isTapped = isSukuBungaTextTapped,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                Text(
+                    text = stringResource(R.string.down_payment),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                )
+                OutlinedTextField(
+                    value = inputUangMuka,
+                    onValueChange = { newInput ->
+                        inputUangMuka = newInput
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    maxLines = 1,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                Text(
+                    text = stringResource(R.string.time_period_year),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                )
+                jangkaWaktuTextField(
+                    input = inputJangkaWaktu,
+                    onValueChange = { newInput ->
+                        inputJangkaWaktu = newInput
+                        isJangkaWaktuTextTapped = true
+                    },
+                    isError = !isJangkaWaktuValid,
+                    isTapped = isJangkaWaktuTextTapped,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                )
+                val isButtonEnabled =
+                    inputHarga.isNotEmpty() && inputSukuBunga.isNotEmpty() && inputUangMuka.isNotEmpty() && inputJangkaWaktu.isNotEmpty()
+                val isInputValid = inputHarga.toDoubleOrNull()
+                    ?.let { it >= 0 } == true && isJangkaWaktuValid && isSukuBungaValid && inputUangMuka.toDoubleOrNull()
+                    ?.let { it >= 0 } == true
                 Row(Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)) {
                     Button(
                         onClick = {
-                            viewModel.countArea(
-                                inputHarga = inputHarga.toInt(),
-                                selectedYear = selectedYear
+                            viewModel.kpr(
+                                inputHarga = inputHarga,
+                                inputSukuBunga = inputSukuBunga,
+                                inputUangMuka = inputUangMuka,
+                                inputJangkaWaktu = inputJangkaWaktu
                             )
                         },
-                        enabled = isButtonEnabled && isInputValid && isPriceValid,
+                        enabled = isButtonEnabled && isInputValid,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(64.dp)
@@ -200,33 +217,35 @@ fun TipeForm(
                     ) {
                         Text(
                             text = if (!isButtonEnabled) stringResource(R.string.complete_form)
-                            else if (!isInputValid) stringResource(R.string.cant_negative)
-                            else if (isButtonEnabled && isInputValid && isPriceValid) stringResource(
-                                R.string.predict
-                            )
+                            else if (!isInputValid) stringResource(R.string.please_match_the_criteria)
+                            else if (isButtonEnabled && isInputValid) stringResource(R.string.count)
                             else stringResource(R.string.complete_form),
                             fontSize = 16.sp
                         )
                     }
-                    LaunchedEffect(areaResponse) {
-                        val lbPrediction = areaResponse?.lb
-                        val ltPrediction = areaResponse?.lt
-                        if (lbPrediction != null && ltPrediction != null) {
-                            println("Building Area Prediction: $lbPrediction")
-                            println("Land Area Prediction: $ltPrediction")
+                    LaunchedEffect(kprResponse) {
+                        val debtsCount = kprResponse?.debts
+                        val monthlyInstallmentCount = kprResponse?.monthlyInstallment
+                        val totalCount = kprResponse?.total
 
-                            navController.navigate("TipeDetail/${inputHarga}/${selectedYear}/${lbPrediction}/${ltPrediction}") {
+                        if (debtsCount != null && monthlyInstallmentCount != null && totalCount != null) {
+                            println("Debts Count: $debtsCount")
+                            println("Monthly Installment Count: $monthlyInstallmentCount")
+                            println("Total Count: $totalCount")
+
+                            navController.navigate("KprDetail/${inputHarga}/${inputSukuBunga}/${inputUangMuka}/${inputJangkaWaktu}/${debtsCount}/${monthlyInstallmentCount}/${totalCount}") {
                                 popUpTo(Screen.Home.route) { saveState = false }
                                 restoreState = true
                                 launchSingleTop = true
                             }
                         } else {
                             println("Prediction is null")
-
                         }
                     }
+
                 }
             }
+
             if (isLoading) {
                 Box(
                     modifier = Modifier
@@ -243,9 +262,10 @@ fun TipeForm(
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun priceTextField(
+fun sukuBungaTextField(
     input: String,
     onValueChange: (String) -> Unit,
     isError: Boolean,
@@ -259,13 +279,6 @@ fun priceTextField(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Next
         ),
-        leadingIcon = {
-            Icon(
-                painterResource(R.drawable.rupiah),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-        },
         isError = isError && isTapped,
         maxLines = 1,
         modifier = Modifier
@@ -274,7 +287,39 @@ fun priceTextField(
     )
     if (isError && isTapped) {
         Text(
-            text = "Minimum price should be Rp 1.000.000.000 and Max price is Rp 100.000.000.000",
+            text = "Value must be 1 - 100",
+            color = Color.Red,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun jangkaWaktuTextField(
+    input: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    isTapped: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    OutlinedTextField(
+        value = input,
+        onValueChange = onValueChange,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
+        isError = isError && isTapped,
+        maxLines = 1,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+    )
+    if (isError && isTapped) {
+        Text(
+            text = "Value must be 1 - 20",
             color = Color.Red,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)

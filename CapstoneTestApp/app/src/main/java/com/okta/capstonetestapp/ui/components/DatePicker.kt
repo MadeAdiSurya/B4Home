@@ -16,72 +16,27 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
-
-val monthList = listOf(
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-)
-
+import com.okta.capstonetestapp.R
 
 @Composable
 fun MonthYearPicker(
-    selectedMonth: String,
     selectedYear: Int,
-    onMonthSelected: (String) -> Unit,
     onYearSelected: (Int) -> Unit
 ) {
     Column {
         Column(
             modifier = Modifier
                 .border(border = BorderStroke(width = 1.dp, Color.LightGray), shape = RoundedCornerShape(8.dp))
-        ){
-            Text(
-                text = "Month",
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                color = MaterialTheme.colorScheme.background,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
-                    )
-                    .padding(vertical = 16.dp)
-            )
-        Spacer(modifier = Modifier.height(16.dp))
-            StringPicker(
-                value = selectedMonth,
-                options = monthList,
-                onValueChange = onMonthSelected
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Column(
-            modifier = Modifier
-                .border(border = BorderStroke(width = 1.dp, Color.LightGray), shape = RoundedCornerShape(8.dp))
         ) {
             Text(
-                text = "Year",
+                text = stringResource(R.string.year),
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp,
                 color = MaterialTheme.colorScheme.background,
@@ -96,41 +51,9 @@ fun MonthYearPicker(
             Spacer(modifier = Modifier.height(16.dp))
             NumberPicker(
                 value = selectedYear,
-                range = 2023..2099,
+                range = 2024..2099,
                 onValueChange = onYearSelected
             )
-        }
-    }
-}
-
-@Composable
-fun StringPicker(
-    value: String,
-    options: List<String>,
-    onValueChange: (String) -> Unit
-) {
-    val scrollState = rememberScrollState()
-    Box(
-        Modifier
-            .height(200.dp)
-            .verticalScroll(scrollState)
-    ) {
-        Column {
-            for (option in options) {
-                Text(
-                    text = option,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onValueChange(option)
-                        }
-                        .height(40.dp),
-                    textAlign = TextAlign.Center,
-                    fontSize = if (option == value) 24.sp else 16.sp,
-                    fontWeight = if (option == value) FontWeight.Bold else FontWeight.Normal,
-                )
-            }
-
         }
     }
 }

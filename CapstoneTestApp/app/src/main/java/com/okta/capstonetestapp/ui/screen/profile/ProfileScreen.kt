@@ -22,7 +22,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -78,7 +78,7 @@ fun ProfileScreen(navController: NavHostController = rememberNavController()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Profile") },
+                title = { Text(stringResource(R.string.profile)) },
                 navigationIcon = {},
                 actions = {},
                 colors = TopAppBarDefaults.smallTopAppBarColors(MaterialTheme.colorScheme.primary)
@@ -104,7 +104,7 @@ fun ProfileScreen(navController: NavHostController = rememberNavController()) {
                         .background(MaterialTheme.colorScheme.primary, shape = CircleShape)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.house),
+                        painter = painterResource(R.drawable.person),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -140,10 +140,10 @@ fun ProfileScreen(navController: NavHostController = rememberNavController()) {
                         openDialog.value = false
                     },
                     title = {
-                        Text(text = "Success!")
+                        Text(text = stringResource(R.string.success))
                     },
                     text = {
-                        Text("Logout")
+                        Text(stringResource(R.string.logout))
                     },
                     confirmButton = {
                         Button(
@@ -153,7 +153,7 @@ fun ProfileScreen(navController: NavHostController = rememberNavController()) {
                                 navigateToWelcome.value = true
                             }
                         ) {
-                            Text("Lanjut")
+                            Text(stringResource(R.string.continueWord))
                         }
                     }
                 )

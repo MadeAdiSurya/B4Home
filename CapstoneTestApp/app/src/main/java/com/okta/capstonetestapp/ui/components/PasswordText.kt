@@ -63,7 +63,7 @@ fun PasswordText(
 
         if (isError && isTapped) {
             Text(
-                text = "Password must be minimal 8 characters",
+                text = stringResource(R.string.password_must_be_minimal_8_characters),
                 color = Color.Red,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(start = 32.dp, end = 32.dp, bottom = 8.dp)
