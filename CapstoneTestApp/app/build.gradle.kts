@@ -9,6 +9,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
+        buildConfigField("String", "BASE_URL", '\"' + "https://b4home-qvwbekybnq-uc.a.run.app/" + '\"')
         applicationId = "com.okta.capstonetestapp"
         minSdk = 24
         targetSdk = 34
@@ -39,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"

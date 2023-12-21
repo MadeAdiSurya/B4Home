@@ -5,6 +5,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import com.okta.capstonetestapp.BuildConfig
 
 class ApiConfig {
     companion object{
@@ -16,7 +17,7 @@ class ApiConfig {
                 .readTimeout(30, TimeUnit.SECONDS)    // socket timeout
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://b4home-qvwbekybnq-uc.a.run.app/")
+                .baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()
