@@ -1,12 +1,16 @@
 import os 
-from tensorflow.keras.models import load_model
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+import io
+import tensorflow
+from tensorflow import keras
 from flask import Flask, request, jsonify
 import numpy as np
 
 app = Flask(__name__)
 
 # Load the model from the HDF5 file
-model = load_model('house_pricing_model.h5')
+model = keras.models.load_model('house_pricing_model.h5')
 
 LB_mean = 276.53960396039605
 LT_mean = 237.43267326732672
