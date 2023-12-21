@@ -4,6 +4,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import io
 import tensorflow
 from tensorflow import keras
+from keras import layers, models
 from flask import Flask, request, jsonify
 import numpy as np
 from datetime import datetime
@@ -49,9 +50,19 @@ def convert_GRS(value):
     temp = (value - GRS_mean) / GRS_std
     return temp
 
+def convert_HARGA(value):
+    temp = (value - HARGA_mean) / HARGA_std
+    return temp
+
 def diff_year(value):
-    temp = abs(value - datetime.now().year)
+    year = datetime.now().year
+    temp = abs(value - year)
     return temp * 0.05
+
+def harga_akhir(harga, tahun):
+    year = datetime.now().year
+    temp = abs(tahun - year)
+    return temp * 0.05 * harga
 
 def price_ori_scale(value):
     original_value = abs(value * HARGA_std) + HARGA_mean
@@ -83,7 +94,7 @@ def predict():
     kt = data.get('kt', None)
     km = data.get('km', None)
     grs = data.get('grs', None)
-    tahun = data.get("tahun")
+    tahun = data.get("tahun", None)
 
     # Normalize the input data
     lb_norm = convert_LB(lb)
@@ -135,6 +146,85 @@ def calculate_kpr():
         'total': total
     }), 200
 
+
+def inverse_convert_LB(value):
+    original_value = abs(value * LB_std) + LB_mean
+    return int(original_value)
+
+def inverse_convert_LT(value):
+    original_value = abs(value * LB_std) + LB_mean
+    return int(original_value)
+
+def inverse_convert_KT(value):
+    original_value = abs(value * LB_std) + LB_mean
+    return int(original_value)
+
+def inverse_convert_KM(value):
+    original_value = abs(value * LB_std) + LB_mean
+    return int(original_value)
+
+def inverse_convert_GRS(value):
+    original_value = abs(value * GRS_std) + GRS_mean
+    return int(original_value)
+
+
+# Create a dictionary of conversion functions
+inverse_convert_functions = {
+    'LB': inverse_convert_LB,
+    'LT': inverse_convert_LT,
+    'KT': inverse_convert_KT,
+    'KM': inverse_convert_KM,
+    'GRS': inverse_convert_GRS
+}
+
+# Inverse model function
+def inverse_model(harga_rumah):
+    # Modeling Invers
+    inverse_model_architecture = models.Sequential([
+        layers.Dense(10, activation='relu', input_shape=(1,)),
+        layers.Dense(10, activation='relu'),
+        layers.Dense(15, activation='relu'),
+        layers.Dense(5)
+    ])
+
+    # Load Model
+    inverse_model_architecture.load_weights('inverse_model.h5', by_name=True)
+
+    # Inversing
+    fitur_estimasi = inverse_model_architecture.predict(np.array([[harga_rumah]]))
+
+    return fitur_estimasi.flatten()
+
+def predict_house_type(input_harga):
+    harga_calculated = input_harga / 0.443
+    harga_rumah_pengguna = convert_HARGA(harga_calculated)
+    fitur_estimasi = inverse_model(harga_rumah_pengguna)
+    original_outputs = {feature: inverse_convert_functions[feature](fitur_estimasi[i]) for i, feature in enumerate(inverse_convert_functions)}
+    return original_outputs
+
+@app.route('/housetype', methods=['POST'])
+def predict_house():
+    data = request.get_json()
+    input_harga = data['input_harga']
+    tahun = data["tahun"]
+
+    final_price = harga_akhir(input_harga, tahun)
+    
+    LB_value = 1
+    LT_value = 0
+
+    while (LB_value > LT_value or abs(LT_value - LB_value) <= 100):
+        temp = predict_house_type(final_price)
+        LB_value = temp['LB']
+        LT_value = temp['LT']
+
+    # Return only 'LB' and 'LT'
+    response = {
+        'LB': LB_value,
+        'LT': LT_value
+    }
+
+    return jsonify(response), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
