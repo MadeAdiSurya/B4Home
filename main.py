@@ -3,6 +3,8 @@ from tensorflow.keras.models import load_model
 from flask import Flask, request, jsonify
 import numpy as np
 
+app = Flask(__name__)
+
 # Load the model from the HDF5 file
 model = load_model('house_pricing_model.h5')
 
@@ -43,8 +45,6 @@ def convert_GRS(value):
 def price_ori_scale(value):
     original_value = abs(value * HARGA_std) + HARGA_mean
     return int(original_value)
-
-app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
