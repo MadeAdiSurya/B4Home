@@ -26,6 +26,8 @@ KM_std = 1.420065965909875
 GRS_std = 0.3361428015645967
 HARGA_std = 7340945790.215558
 
+appreaciation_rate = 0.05
+
 def convert_LB(value):
     temp = (value - LB_mean) / LB_std
     return temp
@@ -59,6 +61,7 @@ def predict():
     kt = data.get('kt', None)
     km = data.get('km', None)
     grs = data.get('grs', None)
+    tahun = data.get("tahun", None)
 
     # Normalize the input data
     lb_norm = convert_LB(lb)
@@ -76,9 +79,10 @@ def predict():
     # Scale the prediction back to the original price
     scaled_price = round(price_ori_scale(prediction[0, 0]) * 0.4423)
 
+    end_price = scaled_price *(1+ appreaciation_rate) 
 
     # Return the result as JSON
-    return jsonify({'prediction': scaled_price})
+    return jsonify({'price_prediction': end_price})
 
 if __name__ == '__main__':
     app.run(debug=True)
