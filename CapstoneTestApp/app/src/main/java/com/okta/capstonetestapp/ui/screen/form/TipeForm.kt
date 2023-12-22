@@ -188,7 +188,7 @@ fun TipeForm(
                     Button(
                         onClick = {
                             viewModel.countArea(
-                                inputHarga = inputHarga.toInt(),
+                                inputHarga = inputHarga.toLong(),
                                 selectedYear = selectedYear
                             )
                         },

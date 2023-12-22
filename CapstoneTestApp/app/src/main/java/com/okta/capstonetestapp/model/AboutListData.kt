@@ -9,7 +9,7 @@ val AboutList = listOf(
         "A700BSY2100"
     ),
     AboutListData(
-        "https://th.bing.com/th/id/OIP.QjynegEfQVPq5kIEuX9fWQHaFj?rs=1&pid=ImgDetMain",
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYQczIguWwW6wL1kUUlkmGZvOx9GTZbXaEU3ns8JRPXTHDS3PtGSUmBjU_EMloLA1NPfOZjDN-ofQqwNGp-1vgwDuPTqGA=s1600",
         "Henry Hutama Plantema",
         "C014BSY4076"
     ),
@@ -20,7 +20,7 @@ val AboutList = listOf(
     ),
 
     AboutListData(
-        "https://th.bing.com/th/id/OIP.QjynegEfQVPq5kIEuX9fWQHaFj?rs=1&pid=ImgDetMain",
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYR-62PExZdWyugFP3TTT5izyH1fZSYs1Bpj1SHcXQd8nRyMDOcKg7zoZznQwN9K3voNKNsZ4K8qRgbFa1pnOIBhcgEOFQ=s1600",
         "Made Dhyo Pradnyadiva",
         "C002BSY3785"
     ),
@@ -30,7 +30,7 @@ val AboutList = listOf(
         "M002BSX1865"
     ),
     AboutListData(
-        "https://th.bing.com/th/id/OIP.QjynegEfQVPq5kIEuX9fWQHaFj?rs=1&pid=ImgDetMain",
+        "https://lh3.googleusercontent.com/drive-viewer/AEYmBYTD9WBrIxYcFGLRqIZPf1dQa1xVPliDJDEPhyRgjoReQtk3rz4D5u_EVP9Ow706LbRXS7yUbrcV-kwPoJ_-kCtMxZTOYQ=s1600",
         "Hefin Immanuel Ginting",
         "M002BSY0470"
     ),

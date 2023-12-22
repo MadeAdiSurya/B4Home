@@ -19,7 +19,7 @@ class TipeFormViewModel : ViewModel() {
 
     val isLoading = MutableStateFlow(false)
     fun countArea(
-        inputHarga: Int,
+        inputHarga: Long,
         selectedYear: Int,
     ){
         val jsonObject = JSONObject()
